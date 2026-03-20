@@ -53,6 +53,7 @@ import com.cutmeshort.client.util.JSON;
 @javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2026-03-20T11:35:18.165374+05:30[Asia/Kolkata]", comments = "Generator version: 7.20.0")
 public class TrackResponse {
   public static final String SERIALIZED_NAME_SUCCESS = "success";
+  public static final String SERIALIZED_NAME_STATUS = "status";
   @SerializedName(SERIALIZED_NAME_SUCCESS)
   @javax.annotation.Nonnull
   private Boolean success;
@@ -183,7 +184,7 @@ public class TrackResponse {
 
   static {
     // a set of all properties/fields (JSON key names)
-    openapiFields = new HashSet<String>(Arrays.asList("success", "message", "data"));
+    openapiFields = new HashSet<String>(Arrays.asList("success", "status", "message", "data"));
 
     // a set of required properties/fields (JSON key names)
     openapiRequiredFields = new HashSet<String>(Arrays.asList("success", "message"));
@@ -243,8 +244,20 @@ public class TrackResponse {
            @Override
            public TrackResponse read(JsonReader in) throws IOException {
              JsonElement jsonElement = elementAdapter.read(in);
-             validateJsonElement(jsonElement);
-             return thisAdapter.fromJsonTree(jsonElement);
+             JsonObject normalized = jsonElement.getAsJsonObject();
+
+             if (normalized.has(SERIALIZED_NAME_STATUS) && !normalized.has(SERIALIZED_NAME_SUCCESS)) {
+               normalized.add(SERIALIZED_NAME_SUCCESS, normalized.get(SERIALIZED_NAME_STATUS));
+             }
+             if (normalized.has(SERIALIZED_NAME_DATA) && normalized.get(SERIALIZED_NAME_DATA).isJsonPrimitive()) {
+               if (!normalized.has(SERIALIZED_NAME_MESSAGE)) {
+                 normalized.add(SERIALIZED_NAME_MESSAGE, normalized.get(SERIALIZED_NAME_DATA));
+               }
+               normalized.remove(SERIALIZED_NAME_DATA);
+             }
+
+             validateJsonElement(normalized);
+             return thisAdapter.fromJsonTree(normalized);
            }
 
        }.nullSafe();

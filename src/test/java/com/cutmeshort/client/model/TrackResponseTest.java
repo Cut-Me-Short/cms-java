@@ -22,8 +22,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Model tests for TrackResponse
@@ -61,6 +62,27 @@ public class TrackResponseTest {
     @Test
     public void dataTest() {
         // TODO: test data
+    }
+
+    @Test
+    public void fromJsonAcceptsStatusAndDataString() throws IOException {
+        String json = "{\"status\":true,\"data\":\"Lead tracked successfully\"}";
+
+        TrackResponse response = TrackResponse.fromJson(json);
+
+        assertTrue(response.getSuccess());
+        assertEquals("Lead tracked successfully", response.getMessage());
+    }
+
+    @Test
+    public void fromJsonAcceptsLegacySuccessMessage() throws IOException {
+        String json = "{\"success\":true,\"message\":\"ok\",\"data\":{\"id\":123}}";
+
+        TrackResponse response = TrackResponse.fromJson(json);
+
+        assertTrue(response.getSuccess());
+        assertEquals("ok", response.getMessage());
+        assertEquals(123.0, response.getData().get("id"));
     }
 
 }
